@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { UtilityService } from './../utils/utils.service';
 
 @Component({
   selector: 'app-tabellone',
@@ -14,27 +15,35 @@ export class TabelloneComponent implements OnInit {
   isGameOn: boolean = false;
   matchCount: number = 1;
   numeriRimanenti: number = 90;
-  numeroGiocatori: number = 8;
+  giocatori!: string[]
+  numGiocatori:number=0;
   winner!: number;
   record: Record[] = [];
+  subscriptions:Subscription=new Subscription;
   displayedColumns = ['player', 'numPartite', 'mosse'];
 
-  constructor(private cdRef: ChangeDetectorRef, private route: ActivatedRoute) {
-    this.route.params.subscribe((params) => {
-      this.numeroGiocatori = parseInt(params['numeroGiocatori']);
-    });
+  constructor(private cdRef: ChangeDetectorRef, private utilityService: UtilityService) {
+
   }
 
   ngOnInit() {
-    console.log(this.numeroGiocatori);
-    this.riempiTabellone();
-    for (let i = 0; i < this.numeroGiocatori; i++) {
-      this.isReset.push(false);
-    }
+    this.subscriptions.add(
+    this.utilityService.getPlayers().subscribe(res=>{
+      this.giocatori=res;
+      this.riempiTabellone();
+      for (let i = 0; i < res.length; i++) {
+        this.isReset.push(false);
+      }
+    }))
+  }
+
+  ngOnDestroy(){
+    this.subscriptions.unsubscribe();
+    this.resetGioco();
   }
 
   numSequence(): Array<number> {
-    return Array(this.numeroGiocatori);
+    return Array(this.numGiocatori);
   }
 
   riempiTabellone() {
@@ -75,12 +84,13 @@ export class TabelloneComponent implements OnInit {
     this.tabellone = [];
     this.isWinner = false;
     for (let i = 0; i < this.isReset.length; i++) {
+      console.log(this.isReset)
       this.isReset[i] = true;
     }
     this.riempiTabellone();
     record.push({
       numPartite: this.matchCount,
-      player: this.winner,
+      player:this.giocatori[this.winner],
       mosse: 90 - this.numeriRimanenti,
     });
     this.record = record;
@@ -106,6 +116,6 @@ export interface Tile {
 
 export interface Record {
   numPartite: number;
-  player: number;
+  player: string;
   mosse: number;
 }

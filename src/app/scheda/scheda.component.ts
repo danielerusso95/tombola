@@ -16,6 +16,7 @@ export class SchedaComponent implements OnInit, OnChanges {
   @Input() numEstratto!: number;
   @Input() isReset!: boolean;
   @Input() numeroGiocatore!: number;
+  @Input() nomeGiocatore!: string;
   @Output() isWinner: EventEmitter<{ isAllTrue: boolean; num: number }> =
     new EventEmitter<{ isAllTrue: boolean; num: number }>();
   @Output() isResetCompleted: EventEmitter<number> = new EventEmitter<number>();

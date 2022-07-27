@@ -1,77 +1,80 @@
-<div>
-  <mat-grid-list cols="10" rowHeight="2:1">
+
+<div class="container">
+  <h4 class="text-center my-3">TABELLONE</h4>
+  <mat-grid-list class="border" cols="10" rowHeight="2:1">
     <div *ngFor="let num of tabella">
-      <mat-grid-tile>
-        <mat-card [ngStyle]="{ 'background-color': num.isLit ? 'yellow' : '' }">
+      <mat-grid-tile class="border">
+        <mat-card class="mat-elevation-z h-100 w-100 d-flex justify-content-center align-items-center" [ngStyle]="{ 'background-color': num.isLit ? 'yellow' : '' }">
           {{ num.numero }}
         </mat-card>
       </mat-grid-tile>
     </div>
   </mat-grid-list>
+</div>
 
-  <br /><br />
-
-  <div *ngIf="!isWinner">
-    <button mat-raised-button color="warn" (click)="estrai()">Estrai</button>
+<div class="container">
+  <h5 *ngIf="winner>=0" class="text-center mb-2 text-danger">{{giocatori[winner]}} VINCE!</h5>
+  <div class="d-flex justify-content-center mt-5" *ngIf="!isWinner">
+    <button mat-raised-button color="warn" (click)="estrai()">
+      Estrai
+    </button>
   </div>
-  <div style="{text-align: center;}" *ngIf="isWinner">
+  <div class="d-flex justify-content-center mt-5" *ngIf="isWinner">
     <button mat-raised-button color="warn" (click)="resetGioco()">
       Rigioca
     </button>
   </div>
-  <br />
+</div>
 
-  <div *ngIf="numEstratto">
-    <h1>Numero Estratto: {{ numEstratto }}</h1>
+<div class="container mt-5">
+  <h4 class="text-center">LIVE!</h4>
+  <div class="row justify-content-center white-bg">
+    <div class="col border"><p class="m-0">Numero Estratto: {{ numEstratto }}</p></div>
+    <div class="col border"><p class="m-0">Numeri Rimasti: {{ numeriRimanenti }}</p></div>
+    <div class="col border"><p class="m-0">Partite Giocate: {{ matchCount }}</p></div>
   </div>
-  <div>
-    <h1>Numeri Da Estrarre: {{ numeriRimanenti }}</h1>
-  </div>
-  <div>
-    <h1>Numero Partite: {{ matchCount }}</h1>
-  </div>
+</div>
 
-  <br />
-  <mat-grid-list cols="2" rowHeight="">
-    <div *ngFor="let player of numSequence(); let i = index">
-      <h3>Giocatore n°{{ i + 1 }}</h3>
-      <span *ngIf="i == winner" style="color: red;">WINNER!</span>
+<div class="container mt-5" *ngIf="record.length">
+  <h4 class="text-center mt-2">STORICO</h4>
+  <div class="row mat-elevation-z1 white-bg">
+    <mat-table #table [dataSource]="record">
+      <ng-container matColumnDef="player">
+        <mat-header-cell *matHeaderCellDef> Giocatore </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{ element.player }} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="numPartite">
+        <mat-header-cell *matHeaderCellDef> Partita Vinta </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{ element.numPartite }} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="mosse">
+        <mat-header-cell *matHeaderCellDef> Mosse </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{ element.mosse }} </mat-cell>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    </mat-table>
+  </div>
+</div>
 
+<div class="container mt-5 ">
+  <div class="row justify-content-around ">
+    <h4 class="text-center mb-5">SCHEDE</h4>
+    <div class="col-5 mb-3 border d-flex flex-column justify-content-center white-bg" style="height: 250px" *ngFor="let player of giocatori; let i = index">
+      <h4 class="text-center pb-3">Giocatore {{ player || i+1 }}</h4>
+      <h5 *ngIf="i == winner" class="text-center mb-2 text-danger">WINNER!</h5>
       <app-scheda
         [numEstratto]="numEstratto"
         [isReset]="isReset[i]"
+        [nomeGiocatore]="player"
         [numeroGiocatore]="i"
         (isResetCompleted)="toResetScheda($event)"
         (isWinner)="checkWinner($event)"
       ></app-scheda>
-      <br />
     </div>
-  </mat-grid-list>
+  </div>
 </div>
 
-<div class="example-container mat-elevation-z8">
-  <mat-table #table [dataSource]="record">
-    <!--- Note that these columns can be defined in any order.
-        The actual rendered columns are set as a property on the row definition" -->
 
-    <!-- Position Column -->
-    <ng-container matColumnDef="player">
-      <mat-header-cell *matHeaderCellDef> Giocatore </mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{ element.player }} </mat-cell>
-    </ng-container>
 
-    <!-- Name Column -->
-    <ng-container matColumnDef="numPartite">
-      <mat-header-cell *matHeaderCellDef> Partite Vinte </mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{ element.numPartite }} </mat-cell>
-    </ng-container>
 
-    <!-- Weight Column -->
-    <ng-container matColumnDef="mosse">
-      <mat-header-cell *matHeaderCellDef> Mosse </mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{ element.mosse }} </mat-cell>
-    </ng-container>
-    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
-  </mat-table>
-</div>

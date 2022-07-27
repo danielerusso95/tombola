@@ -8,3 +8,12 @@
 .light-blue-backdrop {
   background-color: #5cb3fd;
 }
+.my-container{
+  display: grid;
+  grid-template-columns: repeat(8,1fr);
+  height: 500px;
+}
+
+.item{
+  border: 1px solid red;
+}

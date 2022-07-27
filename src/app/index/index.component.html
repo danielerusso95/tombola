@@ -1,44 +1,38 @@
-<mat-card>
-  <div *ngIf="!playersIsSet">
-    <h2>Numero Giocatori</h2>
-    <input type="text" [(ngModel)]="numeroGiocatori" />
-    <button mat-raised-button color="warn" (click)="insertPlayers()">
-      Inserisci
-    </button>
+<div class="container" style="height: 500px;">
+  <h1 class="text-center pt-5">fai... Tombola!</h1>
+  <div class="row h-100 align-items-center">
+    <mat-card>
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            <div class="row justify-content-center">
+              <h2  class="text-center">Inserisci Giocatori</h2>
+              <div [formGroup]="$any(namesForm)" class="col-3 d-flex justify-content-center flex-column align-items-center">
+                <input *ngFor="let control of getFormArray().controls;let i=index" class="form-control" placeholder="Nome Giocatore" type="text" [formControlName]="i" />
+              </div>
+              <div class="col-1 d-flex align-items-center">
+                <button (click)="addPlayer()" [disabled]="playersIsSet" class="border-0 bg-success rounded-circle">+</button>
+              </div>
+              <div class="col-12 d-flex justify-content-center">
+                <button mat-raised-button color="warn" class="mt-4" (click)="insertPlayers(true)" [disabled]="!namesForm.valid || playersIsSet">
+                  Inserisci
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 mt-5 d-flex flex-column justify-content-center align-items-center" *ngIf="playersIsSet">
+            <ul>
+              <li *ngFor="let control of getFormArray().controls">
+                {{control.value}}
+              </li>
+            </ul>
+            <div class="div">
+              <button mat-raised-button class="me-3" color="disabled" (click)="insertPlayers(false)">Reinserisci giocatori</button>
+              <button mat-raised-button class="ms-3" color="warn" (click)="gioca()" >Gioca</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-card>
   </div>
-  <div *ngIf="playersIsSet">
-    <h2>Numero Giocatori: {{ numeroGiocatori }}</h2>
-    <button mat-raised-button color="warn" (click)="gioca()">Gioca</button>
-  </div>
-</mat-card>
-
-<ng-template #content let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title">Modal title</h4>
-    <button
-      type="button"
-      class="btn-close"
-      aria-label="Close"
-      (click)="modal.dismiss('Cross click')"
-    ></button>
-  </div>
-  <div class="modal-body">
-    <p>One fine body&hellip;</p>
-  </div>
-  <div class="modal-footer">
-    <button
-      type="button"
-      class="btn btn-light"
-      (click)="modal.close('Close click')"
-    >
-      Close
-    </button>
-  </div>
-</ng-template>
-
-<!-- <button
-  class="btn btn-outline-primary mb-2 me-2"
-  (click)="openVerticallyCentered(content)"
->
-  Modal vertically centered
-</button> -->
+</div>
